@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxim_Cruz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <script>
+        function fillHeart() {
+            const heart = document.querySelector('.heart-icon i');
+            heart.classList.remove('far');
+            heart.classList.add('fas');
+        }
+
+        // Slider animation
+        const slider = document.querySelector('.image-slider');
+        const slides = document.querySelectorAll('.slide');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Make the first slide active by default
+        if (slides.length > 0) {
+            slides[0].classList.add('active');
+        }
+    </script>
+    <header>
+        <img src="Turquesa y Blanco Degradado Tecnología y Videojuegos Página Web.png" alt="Portada Image" class="cover-image">
+    </header>
+    <div class="instagram-icon">
+        <i class="fab fa-instagram"></i>
+    </div>
+    <div class="heart-icon">
+        <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" onclick="fillHeart()">
+            <i class="far fa-heart"></i>
+        </a>
+        <div class="flying-hearts">
+            <i class="fas fa-heart flying-heart1"></i>
+            <i class="fas fa-heart flying-heart2"></i>
+            <i class="fas fa-heart flying-heart3"></i>
+            <i class="fas fa-heart flying-heart4"></i>
+            <i class="fas fa-heart flying-heart5"></i>
+        </div>
+    </div>
+    <h1>About</h1>
+    <div class="image-slider">
+        <div class="slide">
+            <div class="card">
+                <div>Maximiliano</div>
+                <div>18 años</div>
+                <div class="subtitle">Ing en Robotica</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Frase:</div>
+                <div>Confio en la energia , no en las apariencias</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Deporte:</div>
+                <div>Muay thai , Voleibol, gym</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Estudia:</div>
+                <div>Instituto Politecnico Nacional Esime,Cenlex zacatenco</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Le gusta:</div>
+                <div>Leer,Dormir,Escuchar,</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Artista Fav:</div>
+                <div>Juice wrld</div>
+                <audio controls>
+                    <source src="Juice WRLD - Home ft. XXXTENTACION (Music Video).mp4" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Temas de Interes:</div>
+                <div>Inversiones,Marketing Digital,Auto Conocimiento,Emprendimiento</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Menciona:</div>
+                <div>Dicen que me veo muy especial y envidioso pero la realidad es lo contrario :)</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Dime algo Anonimo:</div>
+                <div>Leo, No respondo a anonimos, si quieres que te responda es mejor hablar directo :)</div>
+                <a href="https://ngl.link/maxim72941?fbclid=PAZXh0bgNhZW0CMTEAAafoBKD4GvvpOOLgqtEtVMZreKFUB5M2KYM3UV-Zdz9xoAF19YFGxUwAEYRTew_aem_buxV7cg1iY3qeb6wLo6Mjg" target="_blank">
+                    <button class="ngl-button">Escribir NGL</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <h1>Mas</h1>
+    <h2 class="shiny-text">Proximamente</h2>
+    <h2 class="shiny-text">SIGUEME</h2>
+</body>
+</html>
