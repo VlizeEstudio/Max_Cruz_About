@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxim_Cruz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <script>
+        function fillHeart() {
+            const heart = document.querySelector('.heart-icon i');
+            heart.classList.remove('far');
+            heart.classList.add('fas');
+        }
+
+        // Slider animation
+        const slider = document.querySelector('.image-slider');
+        const slides = document.querySelectorAll('.slide');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Make the first slide active by default
+        if (slides.length > 0) {
+            slides[0].classList.add('active');
+        }
+
+        // Slider dots functionality
+        const dotsContainer = document.querySelector('.slider-dots');
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => {
+                slider.scrollTo({
+                    left: index * slider.clientWidth,
+                    behavior: 'smooth'
+                });
+            });
+            dotsContainer.appendChild(dot);
+        });
+
+        // Update active dot on scroll
+        slider.addEventListener('scroll', () => {
+            const scrollLeft = slider.scrollLeft;
+            const slideWidth = slider.clientWidth;
+            const activeIndex = Math.round(scrollLeft / slideWidth);
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        });
+
+        // Swipe detection: change slide one by one on left/right swipe
+        let touchStartX = 0;
+        let isScrolling = false;
+        const swipeThreshold = 80; // px threshold to trigger swipe (higher = less sensitive)
+
+        slider.addEventListener('touchstart', (e) => {
+            if (!isScrolling) {
+                touchStartX = e.changedTouches[0].screenX;
+            }
+        }, { passive: true });
+
+        slider.addEventListener('touchend', (e) => {
+            if (!isScrolling) {
+                const touchEndX = e.changedTouches[0].screenX;
+                handleSwipe(touchStartX, touchEndX);
+            }
+        }, { passive: true });
+
+        function handleSwipe(startX, endX) {
+            const diff = startX - endX;
+            const slideWidth = slider.clientWidth;
+            const currentIndex = Math.round(slider.scrollLeft / slideWidth);
+
+            if (Math.abs(diff) > swipeThreshold) {
+                isScrolling = true;
+                let nextIndex = currentIndex;
+
+                if (diff > 0) {
+                    // Swipe left: go to next slide
+                    nextIndex = currentIndex + 1;
+                } else {
+                    // Swipe right: go to previous slide
+                    nextIndex = currentIndex - 1;
+                }
+
+                // Clamp index to valid range
+                nextIndex = Math.max(0, Math.min(nextIndex, slides.length - 1));
+
+                if (nextIndex !== currentIndex) {
+                    slider.scrollTo({
+                        left: nextIndex * slideWidth,
+                        behavior: 'smooth'
+                    });
+
+                    // Re-enable swipe after scroll completes
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 600);
+                } else {
+                    isScrolling = false;
+                }
+            }
+        }
+
+        // Logic for Photo Gallery Carousel (Swipe)
+        document.addEventListener('DOMContentLoaded', () => {
+            const photoSlider = document.querySelector('.photo-scroll-wrapper');
+            const photoCards = document.querySelectorAll('.photo-card');
+
+            if (photoSlider && photoCards.length > 0) {
+                let startX = 0;
+                let isScrolling = false;
+
+                photoSlider.addEventListener('touchstart', (e) => {
+                    if (!isScrolling) startX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                photoSlider.addEventListener('touchend', (e) => {
+                    if (!isScrolling) {
+                        handlePhotoSwipe(startX, e.changedTouches[0].screenX);
+                    }
+                }, { passive: true });
+
+                function handlePhotoSwipe(start, end) {
+                    const diff = start - end;
+                    if (Math.abs(diff) > 40) { // Threshold
+                        isScrolling = true;
+                        const rect = photoSlider.getBoundingClientRect();
+                        const center = rect.left + rect.width / 2;
+                        
+                        let closest = 0;
+                        let minDst = Infinity;
+                        photoCards.forEach((c, i) => {
+                            const cRect = c.getBoundingClientRect();
+                            const dst = Math.abs((cRect.left + cRect.width/2) - center);
+                            if (dst < minDst) { minDst = dst; closest = i; }
+                        });
+
+                        let next = diff > 0 ? closest + 1 : closest - 1;
+                        next = Math.max(0, Math.min(next, photoCards.length - 1));
+
+                        const target = photoCards[next];
+                        const tRect = target.getBoundingClientRect();
+                        const currentScroll = photoSlider.scrollLeft;
+                        const pos = currentScroll + (tRect.left - rect.left) - (rect.width/2) + (tRect.width/2);
+
+                        photoSlider.scrollTo({ left: pos, behavior: 'smooth' });
+                        setTimeout(() => isScrolling = false, 500);
+                    }
+                }
+            }
+        });
+    </script>
+    <header>
+        <img src="./pfinal.png" alt="Portada Image" class="cover-image">
+    </header>
+    <div class="instagram-icon">
+        <i class="fab fa-instagram"></i>
+    </div>
+    <div class="heart-icon">
+        <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" onclick="fillHeart()">
+            <i class="far fa-heart"></i>
+        </a>
+        <div class="flying-hearts">
+            <i class="fas fa-heart flying-heart1"></i>
+            <i class="fas fa-heart flying-heart2"></i>
+            <i class="fas fa-heart flying-heart3"></i>
+            <i class="fas fa-heart flying-heart4"></i>
+            <i class="fas fa-heart flying-heart5"></i>
+        </div>
+    </div>
+    <h1>Acerca de:</h1>
+    <div class="slider-wrapper">
+        <div class="image-slider">
+        <div class="slide">
+            <div class="card">
+                <div>Maximiliano</div>
+                <div>18 años</div>
+                <div class="subtitle">Ing en Robotica</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Frase:</div>
+                <div>Confio en la energia , no en las apariencias</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Deporte:</div>
+                <div>Muay thai , Voleibol, gym</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Estudia:</div>
+                <div>Instituto Politecnico Nacional Esime,Cenlex zacatenco</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Le gusta:</div>
+                <div>Leer,Dormir,Escuchar,</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Artista Fav:</div>
+                <div>Juice wrld</div>
+                <audio controls>
+                    <source src="Juice WRLD - Home ft. XXXTENTACION (Music Video).mp4" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Temas de Interes:</div>
+                <div>Inversiones,Marketing Digital,Auto Conocimiento,Emprendimiento</div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="card">
+                <div class="subtitle">Menciona:</div>
+                <div>Dicen que me veo muy especial y envidioso pero la realidad es lo contrario :)</div>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-hint">
+        <span class="scroll-dot"></span>
+        <span class="scroll-dot"></span>
+        <span class="scroll-dot"></span>
+    </div>
+    <div class="slider-dots"></div>
+    <div class="photo-section-title">GALERÍA</div>
+    <div class="photo-scroll-wrapper">
+        <div class="photo-card">
+            <img src="./yo.jpeg" alt="Foto 1">
+        </div>
+        <div class="photo-card">
+            <img src="./friends2.jpeg" alt="Foto 2">
+        </div>
+         <div class="photo-card">
+            <img src="./WhatsApp Image 2025-12-25 at 2.44.19 AM.jpeg" alt="Foto 3">
+        </div>
+    </div>
+    <div class="scroll-hint">
+        <span class="scroll-dot"></span>
+        <span class="scroll-dot"></span>
+        <span class="scroll-dot"></span>
+    </div>
+
+    <footer class="footer-ngl">
+        <div>Hola soy Maxim. Desarrollo este sitio.</div>
+        <div>¿Tienes algo que decirme? Me encantaría leerlo.</div>
+        <div class="footer-actions">
+            <a href="https://ngl.link/maxim72941?fbclid=PAZXh0bgNhZW0CMTEAAafoBKD4GvvpOOLgqtEtVMZreKFUB5M2KYM3UV-Zdz9xoAF19YFGxUwAEYRTew_aem_buxV7cg1iY3qeb6wLo6Mjg" target="_blank">
+                <button class="ngl-button">Anonimo NGL</button>
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
