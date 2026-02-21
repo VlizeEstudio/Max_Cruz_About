@@ -1,246 +1,710 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maxim_Cruz</title>
+    <title>Maxim Cruz</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --black: #080808;
+            --near-black: #0f0f0f;
+            --card-bg: #111111;
+            --border: rgba(255,255,255,0.07);
+            --white: #ffffff;
+            --muted: rgba(255,255,255,0.35);
+            --accent: #ffffff;
+            --accent2: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Anton', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* NOISE OVERLAY */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.5;
+        }
+
+        /* HEADER */
+        header {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cover-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            opacity: 0;
+            animation: revealImg 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            filter: grayscale(20%) brightness(0.6);
+        }
+
+        header::after { display: none; }
+
+        .header-title h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(48px, 12vw, 96px);
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 1s ease forwards 0.2s;
+        }
+
+        .header-title p {
+            font-family: 'Anton', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-top: 12px;
+            opacity: 0;
+            animation: slideUp 1s ease forwards 0.4s;
+        }
+
+        @keyframes revealImg {
+            from { opacity: 0; transform: scale(1.05); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SOCIAL ROW */
+        .social-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 36px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .social-row .ig-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 12px 32px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--white);
+            font-family: 'Anton', sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-row .ig-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-row .ig-btn:hover::before { opacity: 1; }
+        .social-row .ig-btn:hover { border-color: transparent; }
+        .social-row .ig-btn span, .social-row .ig-btn i { position: relative; z-index: 1; }
+
+        .heart-wrap {
+            display: inline-flex;
+        }
+
+        .heart-wrap a {
+            color: var(--muted);
+            font-size: 20px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .heart-wrap a:hover { color: #e11d48; }
+
+        .section-label {
+            font-family: 'Anton', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: center;
+            padding: 60px 20px 20px;
+        }
+        .slider-wrapper {
+            position: relative;
+            padding: 0 0 60px;
+        }
+
+        .image-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .image-slider::-webkit-scrollbar { display: none; }
+
+        .slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            min-height: 200px;
+            background: #0a0a0a;
+            border: none;
+            border-radius: 18px;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.4s ease;
+            text-align: center;
+        }
+
+        .card::before { display: none; }
+
+        .slide.active .card::before { transform: scaleY(1); }
+        .slide.active .card { background: #0d0d0d; }
+
+        .card .card-label {
+            font-family: 'Anton', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: center;
+            width: 100%;
+        }
+
+        .card .card-value {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 400;
+            color: var(--white);
+            line-height: 1.3;
+            text-align: center;
+            width: 100%;
+        }
+
+        .card audio {
+            width: 100%;
+            max-width: 200px;
+            height: 32px;
+            filter: invert(1) sepia(0.3);
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .swipe-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 8px 0 4px;
+            opacity: 0.3;
+            animation: hintPulse 2.5s ease-in-out infinite;
+        }
+
+        .swipe-hint i {
+            font-size: 14px;
+            color: var(--white);
+        }
+
+        .swipe-hint span {
+            font-family: 'Anton', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--white);
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.2; transform: translateX(0); }
+            50% { opacity: 0.5; transform: translateX(4px); }
+        }
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 0 20px;
+        }
+
+        .dot {
+            width: 20px;
+            height: 2px;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--white);
+            width: 36px;
+        }
+
+        /* GALLERY — vertical feed */
+        .gallery-feed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            padding: 0 0 40px;
+        }
+
+        .gallery-post {
+            width: 100%;
+            max-width: 480px;
+            height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .gallery-post img {
+            width: 100%;
+            max-height: 75vh;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+            transition: transform 0.4s ease;
+            border: 2px solid rgba(255,255,255,0.08);
+            box-shadow: 0 0 0 1px rgba(80,80,80,0.35), 0 8px 32px rgba(0,0,0,0.6);
+        }
+
+        .gallery-post:hover img {
+            transform: scale(1.01);
+        }
+
+        .post-date {
+            font-family: 'Anton', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-top: 12px;
+        }
+
+        .gallery-post .post-counter {
+            font-family: 'Anton', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .gallery-scroll-container {
+            height: 100svh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .gallery-scroll-container::-webkit-scrollbar { display: none; }
+
+        .scroll-down-hint {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.3;
+            animation: bounceDown 2s ease-in-out infinite;
+        }
+
+        .scroll-down-hint i {
+            font-size: 16px;
+            color: var(--white);
+        }
+
+        .scroll-down-hint span {
+            font-family: 'Anton', sans-serif;
+            font-size: 8px;
+            letter-spacing: 0.4em;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        @keyframes bounceDown {
+            0%, 100% { opacity: 0.25; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.5; transform: translateX(-50%) translateY(5px); }
+        }
+
+        /* MANIFESTO */
+        .manifesto {
+            padding: 80px 32px;
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .manifesto blockquote {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 400;
+            font-style: normal;
+            line-height: 1.6;
+            color: var(--white);
+            border: none;
+            letter-spacing: 0.05em;
+        }
+
+        .manifesto cite {
+            display: block;
+            margin-top: 24px;
+            font-family: 'Anton', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-style: normal;
+        }
+
+        /* YEAR BANNER */
+        .year-banner {
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .year-scroll {
+            display: flex;
+            gap: 60px;
+            animation: scrollText 12s linear infinite;
+            white-space: nowrap;
+        }
+
+        .year-scroll span {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(32px, 10vw, 72px);
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+        }
+
+        .year-scroll span.filled {
+            color: var(--white);
+            -webkit-text-stroke: 0;
+        }
+
+        @keyframes scrollText {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 60px 32px 40px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            font-family: 'Anton', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        footer .footer-sub {
+            font-family: 'Anton', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+
+        .ngl-button {
+            display: inline-block;
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 14px 36px;
+            font-family: 'Anton', sans-serif;
+            font-size: 12px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border-radius: 50px;
+        }
+
+        .ngl-button:hover {
+            background: var(--white);
+            border-color: var(--white);
+            color: var(--black);
+        }
+
+        /* DIVIDER LINE */
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 40px;
+        }
+        @media (max-width: 768px) {
+            body { text-align: center; }
+            .header-title, .section-label, .manifesto, .year-banner, footer { text-align: center; }
+            .slide { padding: 20px 16px; }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-title">
+            <h1>MAXIM</h1>
+            <p>@maxim_cruz.x &nbsp;·&nbsp; Mexico City</p>
+        </div>
+    </header>
+
+    <!-- SOCIAL ROW -->
+    <div class="social-row">
+        <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" class="ig-btn" id="igBtn">
+            <i class="fab fa-instagram"></i>
+            <span>Seguir</span>
+        </a>
+        <div class="heart-wrap">
+            <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" id="heartLink">
+                <i class="far fa-heart" id="heartIcon"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="section-label">Acerca de</div>
+
+    <div class="slider-wrapper">
+        <div class="image-slider" id="mainSlider">
+            <div class="slide active">
+                <div class="card">
+                    <div class="card-label">Nombre</div>
+                    <div class="card-value">Maximiliano<br>18 años</div>
+                    <div class="card-label">Ing. en Robótica</div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Filosofía</div>
+                    <div class="card-value">Confío en la energía,<br>no en las apariencias</div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Deporte</div>
+                    <div class="card-value">Muay Thai<br>Voleibol · Gym</div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Institución</div>
+                    <div class="card-value">IPN — ESIME<br>Zacatenco</div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Le gusta</div>
+                    <div class="card-value">Leer · Dormir<br>Escuchar</div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Artista Favorito</div>
+                    <div class="card-value">Juice WRLD</div>
+                    <audio controls>
+                        <source src="Juice WRLD - Home ft. XXXTENTACION (Music Video).mp4" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Temas de Interés</div>
+                    <div class="card-value">Inversiones · Marketing<br>Emprendimiento · Autoconocimiento</div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-label">Nota</div>
+                    <div class="card-value" style="font-size:18px">Dicen que me veo muy especial y envidioso — la realidad es lo contrario :)</div>
+                </div>
+            </div>
+        </div>
+        <div class="swipe-hint">
+            <i class="fas fa-chevron-right"></i>
+            <span>Desliza</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="slider-dots" id="sliderDots"></div>
+    </div>
+
+    <!-- MANIFESTO -->
+    <div class="divider"></div>
+    <div class="manifesto">
+        <blockquote>
+            "Confío en la energía,<br>no en las apariencias."
+        </blockquote>
+        <cite>— Maxim Cruz</cite>
+    </div>
+    <div class="divider"></div>
+
+    <!-- GALLERY -->
+    <div class="section-label">Galería</div>
+    <div class="gallery-scroll-container">
+        <div class="gallery-post">
+            <div class="post-counter">01 / 05</div>
+            <img src="NEW.png" alt="Foto 1">
+            <div class="post-date">Enero 2025</div>
+            <div class="scroll-down-hint">
+                <i class="fas fa-chevron-down"></i>
+                <span>Siguiente</span>
+            </div>
+        </div>
+        <div class="gallery-post">
+            <div class="post-counter">02 / 05</div>
+            <img src="NEW2.png" alt="Foto 2">
+            <div class="post-date">Febrero 2025</div>
+            <div class="scroll-down-hint"><i class="fas fa-chevron-down"></i><span>Siguiente</span></div>
+        </div>
+        <div class="gallery-post">
+            <div class="post-counter">03 / 05</div>
+            <img src="NEW3.png" alt="Foto 3">
+            <div class="post-date">Abril 2025</div>
+            <div class="scroll-down-hint"><i class="fas fa-chevron-down"></i><span>Siguiente</span></div>
+        </div>
+        <div class="gallery-post">
+            <div class="post-counter">04 / 05</div>
+            <img src="NEW4.png" alt="Foto 4">
+            <div class="post-date">Agosto 2025</div>
+            <div class="scroll-down-hint"><i class="fas fa-chevron-down"></i><span>Siguiente</span></div>
+        </div>
+        <div class="gallery-post">
+            <div class="post-counter">05 / 05</div>
+            <img src="new5.png" alt="Foto 5">
+            <div class="post-date">Diciembre 2025</div>
+        </div>
+    </div>
+
+    <!-- YEAR BANNER -->
+    <div class="year-banner">
+        <div class="year-scroll">
+            <span class="filled">NEW YEAR</span>
+            <span>NEW SELF</span>
+            <span class="filled">2025</span>
+            <span>MAXIM CRUZ</span>
+            <span class="filled">NEW YEAR</span>
+            <span>NEW SELF</span>
+            <span class="filled">2025</span>
+            <span>MAXIM CRUZ</span>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Hola, soy Maxim.</p>
+        <div class="footer-sub">¿Tienes algo que decirme? Me encantaría leerlo.</div>
+        <a href="https://ngl.link/maxim72941?fbclid=PAZXh0bgNhZW0CMTEAAafoBKD4GvvpOOLgqtEtVMZreKFUB5M2KYM3UV-Zdz9xoAF19YFGxUwAEYRTew_aem_buxV7cg1iY3qeb6wLo6Mjg" target="_blank">
+            <button class="ngl-button">Mensaje anónimo — NGL</button>
+        </a>
+        <br><br>
+        <p style="font-size:12px; margin-top:20px;">© 2025 Maxim Cruz · Desarrollado por Maxim</p>
+    </footer>
+
     <script>
-        function fillHeart() {
-            const heart = document.querySelector('.heart-icon i');
-            heart.classList.remove('far');
-            heart.classList.add('fas');
-        }
-
-        // Slider animation
-        const slider = document.querySelector('.image-slider');
-        const slides = document.querySelectorAll('.slide');
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                } else {
-                    entry.target.classList.remove('active');
-                }
-            });
-        }, { threshold: 0.5 });
-
-        slides.forEach(slide => {
-            observer.observe(slide);
+        // Heart toggle
+        const heartLink = document.getElementById('heartLink');
+        const heartIcon = document.getElementById('heartIcon');
+        heartLink.addEventListener('click', () => {
+            heartIcon.classList.remove('far');
+            heartIcon.classList.add('fas');
+            heartLink.style.color = '#e11d48';
         });
 
-        // Make the first slide active by default
-        if (slides.length > 0) {
-            slides[0].classList.add('active');
-        }
+        // Slider setup
+        const slider = document.getElementById('mainSlider');
+        const slides = slider.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('sliderDots');
 
-        // Slider dots functionality
-        const dotsContainer = document.querySelector('.slider-dots');
-        slides.forEach((_, index) => {
+        slides.forEach((_, i) => {
             const dot = document.createElement('div');
             dot.classList.add('dot');
-            if (index === 0) dot.classList.add('active');
+            if (i === 0) dot.classList.add('active');
             dot.addEventListener('click', () => {
-                slider.scrollTo({
-                    left: index * slider.clientWidth,
-                    behavior: 'smooth'
-                });
+                slider.scrollTo({ left: i * slider.clientWidth, behavior: 'smooth' });
             });
             dotsContainer.appendChild(dot);
         });
 
-        // Update active dot on scroll
         slider.addEventListener('scroll', () => {
-            const scrollLeft = slider.scrollLeft;
-            const slideWidth = slider.clientWidth;
-            const activeIndex = Math.round(scrollLeft / slideWidth);
-            document.querySelectorAll('.dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === activeIndex);
-            });
+            const idx = Math.round(slider.scrollLeft / slider.clientWidth);
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+            slides.forEach((s, i) => s.classList.toggle('active', i === idx));
         });
 
-        // Swipe detection: change slide one by one on left/right swipe
+        // Touch swipe
         let touchStartX = 0;
-        let isScrolling = false;
-        const swipeThreshold = 80; // px threshold to trigger swipe (higher = less sensitive)
-
-        slider.addEventListener('touchstart', (e) => {
-            if (!isScrolling) {
-                touchStartX = e.changedTouches[0].screenX;
+        slider.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        slider.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 60) {
+                const current = Math.round(slider.scrollLeft / slider.clientWidth);
+                const next = Math.max(0, Math.min(current + (diff > 0 ? 1 : -1), slides.length - 1));
+                slider.scrollTo({ left: next * slider.clientWidth, behavior: 'smooth' });
             }
         }, { passive: true });
-
-        slider.addEventListener('touchend', (e) => {
-            if (!isScrolling) {
-                const touchEndX = e.changedTouches[0].screenX;
-                handleSwipe(touchStartX, touchEndX);
-            }
-        }, { passive: true });
-
-        function handleSwipe(startX, endX) {
-            const diff = startX - endX;
-            const slideWidth = slider.clientWidth;
-            const currentIndex = Math.round(slider.scrollLeft / slideWidth);
-
-            if (Math.abs(diff) > swipeThreshold) {
-                isScrolling = true;
-                let nextIndex = currentIndex;
-
-                if (diff > 0) {
-                    // Swipe left: go to next slide
-                    nextIndex = currentIndex + 1;
-                } else {
-                    // Swipe right: go to previous slide
-                    nextIndex = currentIndex - 1;
-                }
-
-                // Clamp index to valid range
-                nextIndex = Math.max(0, Math.min(nextIndex, slides.length - 1));
-
-                if (nextIndex !== currentIndex) {
-                    slider.scrollTo({
-                        left: nextIndex * slideWidth,
-                        behavior: 'smooth'
-                    });
-
-                    // Re-enable swipe after scroll completes
-                    setTimeout(() => {
-                        isScrolling = false;
-                    }, 600);
-                } else {
-                    isScrolling = false;
-                }
-            }
-        }
-
-
     </script>
-    <header>
-        <img src="./pfinal.png" alt="Portada Image" class="cover-image">
-    </header>
-    <div class="instagram-icon">
-        <i class="fab fa-instagram"></i>
-    </div>
-    <div class="heart-icon">
-        <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" onclick="fillHeart()">
-            <i class="far fa-heart"></i>
-        </a>
-        <div class="flying-hearts">
-            <i class="fas fa-heart flying-heart1"></i>
-            <i class="fas fa-heart flying-heart2"></i>
-            <i class="fas fa-heart flying-heart3"></i>
-            <i class="fas fa-heart flying-heart4"></i>
-            <i class="fas fa-heart flying-heart5"></i>
-        </div>
-    </div>
-    <h1>ACERCA DE</h1>
-    <div class="slider-wrapper">
-        <div class="image-slider">
-        <div class="slide">
-            <div class="card">
-                <div>Maximiliano</div>
-                <div>18 años</div>
-                <div class="subtitle">Ing en Robotica</div>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Frase:</div>
-                <div>Confio en la energia , no en las apariencias</div>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Deporte:</div>
-                <div>Muay thai , Voleibol, gym</div>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Estudia:</div>
-                <div>Instituto Politecnico Nacional Esime,Cenlex zacatenco</div>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Le gusta:</div>
-                <div>Leer,Dormir,Escuchar,</div>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Artista Fav:</div>
-                <div>Juice wrld</div>
-                <audio controls>
-                    <source src="Juice WRLD - Home ft. XXXTENTACION (Music Video).mp4" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Temas de Interes:</div>
-                <div>Inversiones,Marketing Digital,Auto Conocimiento,Emprendimiento</div>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="card">
-                <div class="subtitle">Menciona:</div>
-                <div>Dicen que me veo muy especial y envidioso pero la realidad es lo contrario :)</div>
-            </div>
-        </div>
-    </div>
-    <div class="scroll-hint">
-        <span class="scroll-dot"></span>
-        <span class="scroll-dot"></span>
-        <span class="scroll-dot"></span>
-    </div>
-    <h1>GALERÍA</h1>
-    <div class="photo-scroll-wrapper" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
-        <!-- Para ocultar la barra de desplazamiento en navegadores WebKit (Chrome, Safari, Edge),
-             añade la siguiente regla a tu archivo styles.css:
-             .photo-scroll-wrapper::-webkit-scrollbar { display: none; }
-        -->
-        <div class="photo-card" style="min-width: 100%; display: flex; justify-content: center; scroll-snap-align: center;">
-            <img src="NEW.png" alt="Más Fotos 1" style="width: 90%; max-width: 280px; height: auto; border-radius: 15px;">
-        </div>
-        <div class="photo-card" style="min-width: 100%; display: flex; justify-content: center; scroll-snap-align: center;">
-            <img src="NEW2.png" alt="Más Fotos 2" style="width: 90%; max-width: 280px; height: auto; border-radius: 15px;">
-        </div>
-        <div class="photo-card" style="min-width: 100%; display: flex; justify-content: center; scroll-snap-align: center;">
-            <img src="NEW3.png" alt="Más Fotos 3" style="width: 90%; max-width: 280px; height: auto; border-radius: 15px;">
-        </div>
-        <div class="photo-card" style="min-width: 100%; display: flex; justify-content: center; scroll-snap-align: center;">
-            <img src="NEW4.png" alt="Más Fotos 4" style="width: 90%; max-width: 280px; height: auto; border-radius: 15px;">
-        </div>
-        <div class="photo-card" style="min-width: 100%; display: flex; justify-content: center; scroll-snap-align: center;">
-            <img src="new5.png" alt="Más Fotos 5" style="width: 90%; max-width: 280px; height: auto; border-radius: 15px;">
-        </div>
-    </div>
-    <div class="scroll-hint">
-        <span class="scroll-dot"></span>
-        <span class="scroll-dot"></span>
-        <span class="scroll-dot"></span>
-    </div>
-    <div class="slider-dots"></div>
-
-
-
-    <footer class="footer-ngl">
-        <div>Hola soy Maxim. Desarrollo este sitio.</div>
-        <div>¿Tienes algo que decirme? Me encantaría leerlo.</div>
-        <div class="footer-actions">
-            <a href="https://ngl.link/maxim72941?fbclid=PAZXh0bgNhZW0CMTEAAafoBKD4GvvpOOLgqtEtVMZreKFUB5M2KYM3UV-Zdz9xoAF19YFGxUwAEYRTew_aem_buxV7cg1iY3qeb6wLo6Mjg" target="_blank">
-                <button class="ngl-button">Anonimo NGL</button>
-            </a>
-        </div>
-    </footer>
 </body>
 </html>
