@@ -49,7 +49,6 @@
             align-items: center;
             justify-content: center;
             padding: 80px 20px 40px;
-            border-bottom: 1px solid var(--border);
         }
 
         .cover-image {
@@ -104,7 +103,6 @@
             justify-content: center;
             gap: 14px;
             padding: 36px 20px;
-            border-bottom: 1px solid var(--border);
         }
 
         .social-row .ig-btn {
@@ -158,6 +156,8 @@
             text-transform: uppercase;
             color: var(--muted);
             text-align: center;
+            width: 100%;
+            display: block;
             padding: 60px 20px 20px;
         }
         .slider-wrapper {
@@ -283,41 +283,55 @@
             width: 36px;
         }
 
-        /* GALLERY — vertical feed */
-        .gallery-feed {
+        /* GALLERY — one at a time horizontal scroll */
+        .gallery-scroll-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             padding: 0 0 40px;
+            gap: 0;
         }
 
+        .gallery-scroll-container::-webkit-scrollbar { display: none; }
+
         .gallery-post {
-            width: 100%;
-            max-width: 480px;
-            height: 100svh;
+            flex: 0 0 100vw;
+            scroll-snap-align: start;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            scroll-snap-align: start;
-            position: relative;
-            padding: 0 20px;
+            justify-content: center;
+            gap: 14px;
+            padding: 0 28px;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .gallery-post.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .gallery-post img {
-            width: 100%;
-            max-height: 75vh;
+            width: 75%;
+            max-width: 260px;
+            height: 320px;
             object-fit: cover;
             border-radius: 20px;
             display: block;
-            transition: transform 0.4s ease;
             border: 2px solid rgba(255,255,255,0.08);
-            box-shadow: 0 0 0 1px rgba(80,80,80,0.35), 0 8px 32px rgba(0,0,0,0.6);
+            box-shadow: 0 0 0 1px rgba(80,80,80,0.35), 0 12px 40px rgba(0,0,0,0.7);
         }
 
-        .gallery-post:hover img {
-            transform: scale(1.01);
+        .post-counter {
+            font-family: 'Anton', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            color: var(--muted);
+            text-transform: uppercase;
         }
 
         .post-date {
@@ -326,58 +340,9 @@
             letter-spacing: 0.35em;
             color: var(--muted);
             text-transform: uppercase;
-            margin-top: 12px;
         }
 
-        .gallery-post .post-counter {
-            font-family: 'Anton', sans-serif;
-            font-size: 9px;
-            letter-spacing: 0.4em;
-            color: var(--muted);
-            text-transform: uppercase;
-            margin-bottom: 14px;
-        }
-
-        .gallery-scroll-container {
-            height: 100svh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .gallery-scroll-container::-webkit-scrollbar { display: none; }
-
-        .scroll-down-hint {
-            position: absolute;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            opacity: 0.3;
-            animation: bounceDown 2s ease-in-out infinite;
-        }
-
-        .scroll-down-hint i {
-            font-size: 16px;
-            color: var(--white);
-        }
-
-        .scroll-down-hint span {
-            font-family: 'Anton', sans-serif;
-            font-size: 8px;
-            letter-spacing: 0.4em;
-            color: var(--white);
-            text-transform: uppercase;
-        }
-
-        @keyframes bounceDown {
-            0%, 100% { opacity: 0.25; transform: translateX(-50%) translateY(0); }
-            50% { opacity: 0.5; transform: translateX(-50%) translateY(5px); }
-        }
+        .scroll-down-hint { display: none; }
 
         /* MANIFESTO */
         .manifesto {
@@ -447,7 +412,6 @@
         footer {
             padding: 60px 32px 40px;
             text-align: center;
-            border-top: 1px solid var(--border);
         }
 
         footer p {
@@ -546,19 +510,19 @@
             <div class="slide">
                 <div class="card">
                     <div class="card-label">Deporte</div>
-                    <div class="card-value">Muay Thai<br>Gym</div>
+                    <div class="card-value">Muay Thai<br>Voleibol · Gym</div>
                 </div>
             </div>
             <div class="slide">
                 <div class="card">
                     <div class="card-label">Institución</div>
-                    <div class="card-value">IPN — ESIME<br></div>
+                    <div class="card-value">IPN — ESIME<br>Zacatenco</div>
                 </div>
             </div>
             <div class="slide">
                 <div class="card">
                     <div class="card-label">Le gusta</div>
-                    <div class="card-value">Leer · Dormir<br></div>
+                    <div class="card-value">Leer · Dormir<br>Escuchar</div>
                 </div>
             </div>
             <div class="slide">
@@ -579,13 +543,13 @@
             <div class="slide">
                 <div class="card">
                     <div class="card-label">Nota</div>
-                    <div class="card-value" style="font-size:18px">Me veo muy especial y envidioso — la realidad es lo contrario :)</div>
+                    <div class="card-value" style="font-size:18px">Dicen que me veo muy especial y envidioso — la realidad es lo contrario :)</div>
                 </div>
             </div>
         </div>
         <div class="swipe-hint">
             <i class="fas fa-chevron-right"></i>
-            <span>Desliza/span>
+            <span>Desliza</span>
             <i class="fas fa-chevron-right"></i>
         </div>
         <div class="slider-dots" id="sliderDots"></div>
@@ -595,7 +559,7 @@
     <div class="divider"></div>
     <div class="manifesto">
         <blockquote>
-            “Sin límites. Sin miedo.”,<br>
+            "Confío en la energía,<br>no en las apariencias."
         </blockquote>
         <cite>— Maxim Cruz</cite>
     </div>
@@ -635,20 +599,6 @@
             <div class="post-counter">05 / 05</div>
             <img src="new5.png" alt="Foto 5">
             <div class="post-date">Diciembre 2025</div>
-        </div>
-    </div>
-
-    <!-- YEAR BANNER -->
-    <div class="year-banner">
-        <div class="year-scroll">
-            <span class="filled">NEW YEAR</span>
-            <span>NEW SELF</span>
-            <span class="filled">2025</span>
-            <span>MAXIM CRUZ</span>
-            <span class="filled">NEW YEAR</span>
-            <span>NEW SELF</span>
-            <span class="filled">2025</span>
-            <span>MAXIM CRUZ</span>
         </div>
     </div>
 
@@ -705,7 +655,23 @@
                 slider.scrollTo({ left: next * slider.clientWidth, behavior: 'smooth' });
             }
         }, { passive: true });
+
+        // Gallery — fade in on scroll
+        const galleryContainer = document.querySelector('.gallery-scroll-container');
+        const posts = document.querySelectorAll('.gallery-post');
+
+        // Show first post immediately
+        posts[0].classList.add('visible');
+
+        galleryContainer.addEventListener('scroll', () => {
+            const containerLeft = galleryContainer.getBoundingClientRect().left;
+            const containerWidth = galleryContainer.clientWidth;
+            posts.forEach(post => {
+                const postLeft = post.getBoundingClientRect().left - containerLeft;
+                const inView = postLeft >= -containerWidth * 0.3 && postLeft <= containerWidth * 0.3;
+                if (inView) post.classList.add('visible');
+            });
+        });
     </script>
 </body>
 </html>
-
