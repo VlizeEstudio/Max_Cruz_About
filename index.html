@@ -43,13 +43,13 @@
         header {
             position: relative;
             width: 100%;
-            min-height: 100svh;
+            min-height: 70svh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            padding: 0 24px;
+            padding: 60px 24px 48px;
         }
 
         /* soft amber glow */
@@ -797,7 +797,7 @@
             <div class="music-artist">Cali Y El Dandee ft. Sebastián Yatra</div>
         </div>
         <audio id="audioPlayer" preload="none">
-            <source src="Cali Y El Dandee, Sebastián Yatra - Locura.mp3" type="audio/mpeg">
+            <source src="Locura.mp3" type="audio/mpeg">
         </audio>
         <div class="music-controls">
             <div class="music-progress-wrap">
@@ -863,7 +863,7 @@
     // Heart
     document.getElementById('heartLink').addEventListener('click', e => {
         e.preventDefault();
-        document.getElementById('heartIcon').classList.replace('far','fas');
+        document.getElementById('heartIcon').classList.replace('far', 'fas');
         document.getElementById('heartLink').classList.add('liked');
     });
 
@@ -1068,17 +1068,24 @@
     const allA = document.querySelectorAll('.chat-a');
     const allT = document.querySelectorAll('.chat-typing');
 
-    let chatStarted = false;
-
-    const chatSection = document.getElementById('chatWrap');
-    const chatTrigger = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !chatStarted) {
-            chatStarted = true;
-            runChat();
-            chatTrigger.disconnect();
-        }
-    }, { threshold: 0.1 });
-    chatTrigger.observe(chatSection);
+    if (sessionStorage.getItem('chatSeen')) {
+        // Ya visitó — mostrar todo sin animación
+        allQ.forEach(el => el.classList.add('in'));
+        allA.forEach(el => el.classList.add('in'));
+        allT.forEach(el => el.style.display = 'none');
+    } else {
+        let chatStarted = false;
+        const chatSection = document.getElementById('chatWrap');
+        const chatTrigger = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !chatStarted) {
+                chatStarted = true;
+                sessionStorage.setItem('chatSeen', '1');
+                runChat();
+                chatTrigger.disconnect();
+            }
+        }, { threshold: 0.1 });
+        chatTrigger.observe(chatSection);
+    }
 
     function runChat() {
         let delay = 0;
@@ -1086,16 +1093,10 @@
             const q = allQ[i];
             const typing = allT[i];
             const a = allA[i];
-
-            // 1. Pregunta aparece
             setTimeout(() => q.classList.add('in'), delay);
             delay += 500;
-
-            // 2. Typing indicator aparece
             setTimeout(() => typing.classList.add('show'), delay);
             delay += 1400;
-
-            // 3. Typing se oculta, respuesta aparece
             setTimeout(() => {
                 typing.classList.remove('show');
                 setTimeout(() => a.classList.add('in'), 150);
