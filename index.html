@@ -959,7 +959,22 @@
         audio.currentTime = pct * audio.duration;
     });
 
-    // Gallery — dots + reveal
+    // Pausar audio al salir de la página
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && !audio.paused) {
+            audio.pause();
+            playIcon.classList.replace('fa-pause','fa-play');
+            playBtn.classList.remove('playing');
+            musicEq.classList.remove('playing');
+            canvas.classList.remove('active');
+            isPlaying = false;
+            stopAura();
+        }
+    });
+
+    window.addEventListener('pagehide', () => {
+        audio.pause();
+    });
     const gc = document.getElementById('gallery');
     const cards = gc.querySelectorAll('.g-card-inner');
     const dotsWrap = document.getElementById('gDots');
