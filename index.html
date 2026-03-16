@@ -724,7 +724,6 @@
             </div>
         </div>
         <div class="music-info">
-            <img src="me.jpeg" alt="Locura" class="music-cover">
             <div class="music-title">Locura</div>
             <div class="music-artist">Cali Y El Dandee ft. Sebastián Yatra</div>
         </div>
@@ -984,7 +983,7 @@
     gc.addEventListener('touchstart', e => { gTx = e.changedTouches[0].screenX; }, { passive: true });
     gc.addEventListener('touchend', e => {
         const diff = gTx - e.changedTouches[0].screenX;
-        if (Math.abs(diff) > 50) {
+        if (Math.abs(diff) > 80) {
             const cur = Math.round(gc.scrollLeft / gc.clientWidth);
             gc.scrollTo({ left: Math.max(0, Math.min(cur + (diff > 0 ? 1 : -1), cards.length - 1)) * gc.clientWidth, behavior: 'smooth' });
         }
