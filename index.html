@@ -401,14 +401,11 @@
 
         /* ── GALLERY ── */
         .gallery-section {
-            padding: 0 0 72px;
-            overflow: hidden;
+            padding: 0 0 64px;
         }
 
         .g-track {
             display: flex;
-            gap: 12px;
-            padding: 0 24px 0 24px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
@@ -417,64 +414,76 @@
         .g-track::-webkit-scrollbar { display: none; }
 
         .g-card {
-            flex: 0 0 68vw;
-            max-width: 260px;
+            flex: 0 0 100vw;
             scroll-snap-align: start;
+            padding: 0 24px;
             position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #111;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
 
-        /* último card tiene padding derecho para que no se corte feo */
-        .g-card:last-child { margin-right: 24px; }
+        .g-card-inner {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #111;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: scale(0.97) translateY(12px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .g-card-inner.vis {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
 
         .g-card img {
             width: 100%;
-            height: 420px;
+            height: 460px;
             object-fit: cover;
             object-position: top center;
             display: block;
-            filter: grayscale(10%) brightness(0.85);
+            filter: brightness(0.88);
             transition: filter 0.5s ease;
         }
-        .g-card:hover img {
-            filter: grayscale(0%) brightness(1);
-        }
+        .g-card-inner:hover img { filter: brightness(1); }
 
-        /* gradiente inferior */
         .g-card::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0; right: 0;
+            bottom: 0; left: 24px; right: 24px;
             height: 100px;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
             pointer-events: none;
-            border-radius: 0 0 12px 12px;
-        }
-
-        .g-card-date {
-            position: absolute;
-            bottom: 14px;
-            left: 14px;
-            font-family: 'Space Mono', monospace;
-            font-size: 7px;
-            letter-spacing: 0.35em;
-            color: rgba(255,255,255,0.5);
-            text-transform: uppercase;
-            z-index: 1;
+            border-radius: 0 0 16px 16px;
         }
 
         .g-card-num {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            bottom: 16px;
+            left: 40px;
             font-family: 'Space Mono', monospace;
             font-size: 7px;
-            letter-spacing: 0.3em;
-            color: rgba(255,255,255,0.28);
+            letter-spacing: 0.35em;
+            color: rgba(255,255,255,0.4);
             z-index: 1;
+        }
+
+        /* dots */
+        .g-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 16px 0 0;
+        }
+        .g-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .g-dot.active {
+            background: var(--white);
+            transform: scale(1.3);
         }
 
         /* ── MUSIC ── */
@@ -822,31 +831,37 @@
 <div class="gallery-section">
     <div class="g-track" id="gallery">
         <div class="g-card">
-            <img src="NEW.png" alt="Foto 1">
-            <div class="g-card-num">01</div>
-            
+            <div class="g-card-inner">
+                <img src="NEW.png" alt="Foto 1">
+            </div>
+            <div class="g-card-num">01 / 05</div>
         </div>
         <div class="g-card">
-            <img src="NEW2.png" alt="Foto 2">
-            <div class="g-card-num">02</div>
-            
+            <div class="g-card-inner">
+                <img src="NEW2.png" alt="Foto 2">
+            </div>
+            <div class="g-card-num">02 / 05</div>
         </div>
         <div class="g-card">
-            <img src="NEW3.png" alt="Foto 3">
-            <div class="g-card-num">03</div>
-            
+            <div class="g-card-inner">
+                <img src="NEW3.png" alt="Foto 3">
+            </div>
+            <div class="g-card-num">03 / 05</div>
         </div>
         <div class="g-card">
-            <img src="NEW4.png" alt="Foto 4">
-            <div class="g-card-num">04</div>
-            
+            <div class="g-card-inner">
+                <img src="NEW4.png" alt="Foto 4">
+            </div>
+            <div class="g-card-num">04 / 05</div>
         </div>
         <div class="g-card">
-            <img src="new5.png" alt="Foto 5">
-            <div class="g-card-num">05</div>
-            
+            <div class="g-card-inner">
+                <img src="new5.png" alt="Foto 5">
+            </div>
+            <div class="g-card-num">05 / 05</div>
         </div>
     </div>
+    <div class="g-dots" id="gDots"></div>
 </div>
 
 <!-- FOOTER -->
@@ -1062,6 +1077,39 @@
         const pct = (e.clientX - rect.left) / rect.width;
         audio.currentTime = pct * audio.duration;
     });
+
+
+    // Gallery — dots + reveal por foto
+    const gc = document.getElementById('gallery');
+    const cards = gc.querySelectorAll('.g-card-inner');
+    const dotsWrap = document.getElementById('gDots');
+
+    cards.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'g-dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', () => gc.scrollTo({ left: i * gc.clientWidth, behavior: 'smooth' }));
+        dotsWrap.appendChild(d);
+    });
+
+    // Reveal primera foto
+    cards[0].classList.add('vis');
+
+    gc.addEventListener('scroll', () => {
+        const idx = Math.round(gc.scrollLeft / gc.clientWidth);
+        dotsWrap.querySelectorAll('.g-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        cards[idx].classList.add('vis');
+    }, { passive: true });
+
+    // Touch swipe
+    let gTx = 0;
+    gc.addEventListener('touchstart', e => { gTx = e.changedTouches[0].screenX; }, { passive: true });
+    gc.addEventListener('touchend', e => {
+        const diff = gTx - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 50) {
+            const cur = Math.round(gc.scrollLeft / gc.clientWidth);
+            gc.scrollTo({ left: Math.max(0, Math.min(cur + (diff > 0 ? 1 : -1), cards.length - 1)) * gc.clientWidth, behavior: 'smooth' });
+        }
+    }, { passive: true });
 
 
     const allQ = document.querySelectorAll('.chat-q');
