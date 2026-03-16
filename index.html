@@ -2,676 +2,1108 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Maxim Cruz</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --black: #080808;
-            --near-black: #0f0f0f;
-            --card-bg: #111111;
-            --border: rgba(255,255,255,0.07);
-            --white: #ffffff;
-            --muted: rgba(255,255,255,0.35);
-            --accent: #ffffff;
-            --accent2: #ffffff;
+            --bg:      #080808;
+            --bg2:     #0f0f0f;
+            --card:    #111111;
+            --border:  rgba(255,255,255,0.06);
+            --white:   #f0f0f0;
+            --muted:   rgba(240,240,240,0.35);
+            --accent:  #f0f0f0;
+            --dim:     rgba(255,255,255,0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html, body {
-            background-color: var(--black);
+            background: var(--bg);
             color: var(--white);
             font-family: 'Anton', sans-serif;
             overflow-x: hidden;
         }
 
-        /* NOISE OVERLAY */
+        /* grain */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 9999;
             opacity: 0.5;
         }
 
-        /* HEADER */
+        /* ── HERO ── */
         header {
             position: relative;
             width: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 80px 20px 40px;
-        }
-
-        .cover-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center;
-            opacity: 0;
-            animation: revealImg 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            filter: grayscale(20%) brightness(0.6);
-        }
-
-        header::after { display: none; }
-
-        .header-title h1 {
-            font-family: 'Anton', sans-serif;
-            font-size: clamp(48px, 12vw, 96px);
-            font-weight: 400;
-            letter-spacing: 0.3em;
-            color: var(--white);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUp 1s ease forwards 0.2s;
-        }
-
-        .header-title p {
-            font-family: 'Anton', sans-serif;
-            font-size: 11px;
-            letter-spacing: 0.4em;
-            color: var(--muted);
-            text-transform: uppercase;
-            margin-top: 12px;
-            opacity: 0;
-            animation: slideUp 1s ease forwards 0.4s;
-        }
-
-        @keyframes revealImg {
-            from { opacity: 0; transform: scale(1.05); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* SOCIAL ROW */
-        .social-row {
+            min-height: 100svh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 14px;
-            padding: 36px 20px;
+            overflow: hidden;
+            padding: 0 24px;
         }
 
-        .social-row .ig-btn {
+        /* soft amber glow */
+        header::after {
+            content: '';
+            position: absolute;
+            top: 42%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 360px; height: 360px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 68%);
+            pointer-events: none;
+            animation: pulse 5s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            from { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+            to   { opacity: 1;   transform: translate(-50%,-50%) scale(1.12); }
+        }
+
+        /* corner brackets */
+        .brk { position: absolute; width: 22px; height: 22px; }
+        .brk.tl { top: 36px; left: 26px; border-top: 1.5px solid rgba(255,255,255,0.3); border-left: 1.5px solid rgba(255,255,255,0.3); }
+        .brk.tr { top: 36px; right: 26px; border-top: 1.5px solid rgba(255,255,255,0.3); border-right: 1.5px solid rgba(255,255,255,0.3); }
+        .brk.bl { bottom: 36px; left: 26px; border-bottom: 1.5px solid rgba(255,255,255,0.3); border-left: 1.5px solid rgba(255,255,255,0.3); }
+        .brk.br { bottom: 36px; right: 26px; border-bottom: 1.5px solid rgba(255,255,255,0.3); border-right: 1.5px solid rgba(255,255,255,0.3); }
+
+        .hero-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            animation: riseIn 1.1s cubic-bezier(0.16,1,0.3,1) forwards 0.25s;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 0.6em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .hero-name {
+            line-height: 0.85;
+            text-align: center;
+        }
+        .hero-name .n1 {
+            display: block;
+            font-size: clamp(80px, 24vw, 130px);
+            letter-spacing: 0.12em;
+            color: var(--white);
+        }
+        .hero-name .n2 {
+            display: block;
+            font-size: clamp(80px, 24vw, 130px);
+            letter-spacing: 0.12em;
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(255,255,255,0.45);
+            transform: translateX(10px);
+        }
+
+        .hero-age {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.45em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-top: 24px;
+        }
+
+        /* animated line scroll cue */
+        .scroll-cue {
+            position: absolute;
+            bottom: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            z-index: 1;
+        }
+        .scroll-cue .ln {
+            width: 1px; height: 40px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: drip 2s ease-in-out infinite;
+        }
+        .scroll-cue span {
+            font-family: 'Space Mono', monospace;
+            font-size: 7px;
+            letter-spacing: 0.5em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+        @keyframes drip {
+            0%,100% { opacity: 0.25; transform: scaleY(1) translateY(0); }
+            50%      { opacity: 0.7;  transform: scaleY(1.1) translateY(3px); }
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+
+
+        /* ── SOCIAL SECTION ── */
+        .social-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            padding: 48px 20px 52px;
+            position: relative;
+        }
+        /* top line */
+        .social-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 1px; height: 48px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2));
+        }
+        .social-handle {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.35em;
+            color: var(--muted);
+            text-transform: lowercase;
+        }
+        .ig-btn {
             display: flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            padding: 12px 32px;
-            border: 1px solid var(--border);
+            padding: 13px 36px;
+            border: 1.5px solid rgba(255,255,255,0.2);
             border-radius: 50px;
             color: var(--white);
             font-family: 'Anton', sans-serif;
             font-size: 12px;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-
-        .social-row .ig-btn::before {
+        .ig-btn::before {
             content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
-        .social-row .ig-btn:hover::before { opacity: 1; }
-        .social-row .ig-btn:hover { border-color: transparent; }
-        .social-row .ig-btn span, .social-row .ig-btn i { position: relative; z-index: 1; }
-
-        .heart-wrap {
-            display: inline-flex;
-        }
+        .ig-btn:hover::before { opacity: 1; }
+        .ig-btn:hover { border-color: transparent; transform: translateY(-2px); }
+        .ig-btn span, .ig-btn i { position: relative; z-index: 1; }
 
         .heart-wrap a {
             color: var(--muted);
-            font-size: 20px;
+            font-size: 21px;
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            display: inline-block;
         }
+        .heart-wrap a.liked,
+        .heart-wrap a:hover { color: #e11d48; transform: scale(1.22); }
 
-        .heart-wrap a:hover { color: #e11d48; }
-
-        .section-label {
-            font-family: 'Anton', sans-serif;
-            font-size: 10px;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
-            color: var(--muted);
-            text-align: center;
-            width: 100%;
-            display: block;
-            padding: 60px 20px 20px;
-        }
-        .slider-wrapper {
-            position: relative;
-            padding: 0 0 60px;
-        }
-
-        .image-slider {
+        /* ── SECTION LABEL ── */
+        .sl {
             display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .image-slider::-webkit-scrollbar { display: none; }
-
-        .slide {
-            flex: 0 0 100%;
-            scroll-snap-align: start;
-            padding: 20px 32px;
-            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 60px 28px 22px;
             justify-content: center;
         }
+        .sl hr { flex: 1; max-width: 44px; border: none; height: 1px; background: var(--dim); }
+        .sl span {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 0.55em;
+            text-transform: uppercase;
+            color: var(--accent);
+            opacity: 0.75;
+        }
 
-        .card {
-            width: 100%;
-            max-width: 380px;
-            min-height: 200px;
-            background: #0a0a0a;
-            border: none;
-            border-radius: 18px;
-            padding: 40px 32px;
+        /* ── CHAT ABOUT ── */
+        .chat-wrap {
+            padding: 20px 24px 64px;
+            max-width: 420px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-            transition: background 0.4s ease;
-            text-align: center;
+            gap: 6px;
         }
 
-        .card::before { display: none; }
+        /* cada par pregunta/respuesta tiene más espacio */
+        .chat-pair { margin-bottom: 18px; }
 
-        .slide.active .card::before { transform: scaleY(1); }
-        .slide.active .card { background: #0d0d0d; }
+        .chat-msg {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            opacity: 0;
+            transform: translateY(14px) scale(0.98);
+            transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1),
+                        transform 0.45s cubic-bezier(0.16,1,0.3,1);
+            max-width: 78%;
+        }
+        .chat-msg.in {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
 
-        .card .card-label {
-            font-family: 'Anton', sans-serif;
-            font-size: 10px;
+        /* pregunta — izquierda */
+        .chat-q { align-self: flex-start; }
+        .chat-q .chat-who {
+            font-family: 'Space Mono', monospace;
+            font-size: 7px;
             letter-spacing: 0.4em;
             text-transform: uppercase;
             color: var(--muted);
-            text-align: center;
-            width: 100%;
+            margin-bottom: 4px;
+            padding-left: 4px;
+            opacity: 0.6;
+        }
+        .chat-q .chat-bubble {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            line-height: 1.65;
+            color: rgba(240,240,240,0.55);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 2px 14px 14px 14px;
+            padding: 10px 14px;
         }
 
-        .card .card-value {
-            font-family: 'Anton', sans-serif;
-            font-size: clamp(16px, 4vw, 22px);
-            font-weight: 400;
-            color: var(--white);
-            line-height: 1.3;
-            text-align: center;
-            width: 100%;
+        /* respuesta — derecha */
+        .chat-a { align-self: flex-end; text-align: right; }
+        .chat-a .chat-who {
+            font-family: 'Space Mono', monospace;
+            font-size: 7px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 4px;
+            padding-right: 4px;
+            opacity: 0.6;
         }
-
-        .card audio {
-            width: 100%;
-            max-width: 200px;
-            height: 32px;
-            filter: invert(1) sepia(0.3);
-            opacity: 0.7;
-            margin-top: 4px;
-        }
-
-        .swipe-hint {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 8px 0 4px;
-            opacity: 0.3;
-            animation: hintPulse 2.5s ease-in-out infinite;
-        }
-
-        .swipe-hint i {
+        .chat-a .chat-bubble {
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 14px;
+            font-weight: 500;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
             color: var(--white);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 14px 2px 14px 14px;
+            padding: 12px 16px;
+            display: inline-block;
         }
 
-        .swipe-hint span {
-            font-family: 'Anton', sans-serif;
+        /* checkmark "enviado" */
+        .chat-tick {
             font-size: 9px;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: var(--white);
-        }
-
-        @keyframes hintPulse {
-            0%, 100% { opacity: 0.2; transform: translateX(0); }
-            50% { opacity: 0.5; transform: translateX(4px); }
-        }
-        .slider-dots {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            padding: 0 0 20px;
-        }
-
-        .dot {
-            width: 20px;
-            height: 2px;
-            background: var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: var(--white);
-            width: 36px;
-        }
-
-        /* GALLERY — one at a time horizontal scroll */
-        .gallery-scroll-container {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding: 0 0 40px;
-            gap: 0;
-        }
-
-        .gallery-scroll-container::-webkit-scrollbar { display: none; }
-
-        .gallery-post {
-            flex: 0 0 100vw;
-            scroll-snap-align: start;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            padding: 0 28px;
+            color: rgba(255,255,255,0.25);
+            padding-right: 4px;
             opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            transition: opacity 0.4s ease 0.2s;
         }
+        .chat-msg.in .chat-tick { opacity: 1; }
 
-        .gallery-post.visible {
+        /* typing indicator */
+        .chat-typing {
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 2px 14px 14px 14px;
+            padding: 12px 18px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            margin-bottom: 4px;
+        }
+        .chat-typing.right {
+            align-self: flex-end;
+            border-radius: 14px 2px 14px 14px;
+        }
+        .chat-typing.show {
             opacity: 1;
-            transform: scale(1);
+            transform: translateY(0);
+        }
+        .chat-typing span {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            animation: typedot 1.1s ease-in-out infinite;
+        }
+        .chat-typing span:nth-child(2) { animation-delay: 0.18s; }
+        .chat-typing span:nth-child(3) { animation-delay: 0.36s; }
+        @keyframes typedot {
+            0%,60%,100% { transform: translateY(0); opacity: 0.25; }
+            30%          { transform: translateY(-5px); opacity: 1; }
         }
 
-        .gallery-post img {
-            width: 75%;
-            max-width: 260px;
-            height: 320px;
-            object-fit: cover;
-            border-radius: 20px;
-            display: block;
-            border: 2px solid rgba(255,255,255,0.08);
-            box-shadow: 0 0 0 1px rgba(80,80,80,0.35), 0 12px 40px rgba(0,0,0,0.7);
-        }
-
-        .post-counter {
-            font-family: 'Anton', sans-serif;
-            font-size: 9px;
-            letter-spacing: 0.35em;
-            color: var(--muted);
-            text-transform: uppercase;
-        }
-
-        .post-date {
-            font-family: 'Anton', sans-serif;
-            font-size: 9px;
-            letter-spacing: 0.35em;
-            color: var(--muted);
-            text-transform: uppercase;
-        }
-
-        .scroll-down-hint { display: none; }
-
-        /* MANIFESTO */
+        /* ── MANIFESTO ── */
         .manifesto {
-            padding: 80px 32px;
-            max-width: 480px;
+            padding: 72px 32px;
+            max-width: 420px;
             margin: 0 auto;
             text-align: center;
         }
-
         .manifesto blockquote {
-            font-family: 'Anton', sans-serif;
-            font-size: clamp(18px, 4vw, 24px);
-            font-weight: 400;
+            font-family: 'Bebas Neue', sans-serif;
             font-style: normal;
-            line-height: 1.6;
+            font-size: clamp(36px, 10vw, 58px);
+            line-height: 1.15;
             color: var(--white);
-            border: none;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
         }
-
         .manifesto cite {
             display: block;
-            margin-top: 24px;
-            font-family: 'Anton', sans-serif;
-            font-size: 10px;
-            letter-spacing: 0.4em;
-            color: var(--muted);
-            text-transform: uppercase;
+            margin-top: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 0.45em;
+            color: var(--accent);
             font-style: normal;
+            text-transform: uppercase;
+            opacity: 0.75;
         }
 
-        /* YEAR BANNER */
-        .year-banner {
-            padding: 40px 20px;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+        /* ── DIVIDER ── */
+        .div-line {
+            width: 1px; height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2), transparent);
+            margin: 0 auto 40px;
+        }
+
+
+
+        /* ── GALLERY ── */
+        .gallery-section {
+            padding: 0 0 72px;
             overflow: hidden;
         }
 
-        .year-scroll {
+        .g-track {
             display: flex;
-            gap: 60px;
-            animation: scrollText 12s linear infinite;
-            white-space: nowrap;
+            gap: 12px;
+            padding: 0 24px 0 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .g-track::-webkit-scrollbar { display: none; }
+
+        .g-card {
+            flex: 0 0 68vw;
+            max-width: 260px;
+            scroll-snap-align: start;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #111;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
 
-        .year-scroll span {
+        /* último card tiene padding derecho para que no se corte feo */
+        .g-card:last-child { margin-right: 24px; }
+
+        .g-card img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+            filter: grayscale(10%) brightness(0.85);
+            transition: filter 0.5s ease;
+        }
+        .g-card:hover img {
+            filter: grayscale(0%) brightness(1);
+        }
+
+        /* gradiente inferior */
+        .g-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 100px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            pointer-events: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .g-card-date {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            font-family: 'Space Mono', monospace;
+            font-size: 7px;
+            letter-spacing: 0.35em;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            z-index: 1;
+        }
+
+        .g-card-num {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 7px;
+            letter-spacing: 0.3em;
+            color: rgba(255,255,255,0.28);
+            z-index: 1;
+        }
+
+        /* ── MUSIC ── */
+        .music-section {
+            padding: 16px 24px 64px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .music-card {
+            background: #0e0e0e;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 28px 24px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* canvas for background aura */
+        .music-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+            border-radius: 20px;
+        }
+        .music-canvas.active { opacity: 1; }
+
+        /* subtle top shimmer */
+        .music-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            z-index: 1;
+        }
+
+        .music-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .music-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        /* equalizer bars */
+        .music-eq {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .music-eq.playing { opacity: 1; }
+        .music-eq span {
+            width: 3px;
+            background: var(--white);
+            border-radius: 2px;
+            animation: eq 0.8s ease-in-out infinite alternate;
+        }
+        .music-eq span:nth-child(1) { height: 40%; animation-delay: 0s; }
+        .music-eq span:nth-child(2) { height: 100%; animation-delay: 0.15s; }
+        .music-eq span:nth-child(3) { height: 60%; animation-delay: 0.3s; }
+        .music-eq span:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+        @keyframes eq {
+            from { transform: scaleY(0.3); }
+            to   { transform: scaleY(1); }
+        }
+
+        .music-info {
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 2;
+        }
+        .music-title {
             font-family: 'Anton', sans-serif;
-            font-size: clamp(32px, 10vw, 72px);
-            font-weight: 400;
-            letter-spacing: 0.2em;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.15);
-        }
-
-        .year-scroll span.filled {
+            font-size: 26px;
+            letter-spacing: 0.04em;
             color: var(--white);
-            -webkit-text-stroke: 0;
+            line-height: 1.1;
+        }
+        .music-artist {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 5px;
         }
 
-        @keyframes scrollText {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* FOOTER */
+        .music-progress-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .music-progress-bg {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .music-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--white);
+            border-radius: 4px;
+            transition: width 0.5s linear;
+        }
+
+        .music-times {
+            display: flex;
+            justify-content: space-between;
+        }
+        .music-times span {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+        }
+
+        .music-play-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--white);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .music-play-btn:hover { transform: scale(1.08); }
+        .music-play-btn:active { transform: scale(0.95); }
+        .music-play-btn i {
+            color: var(--bg);
+            font-size: 14px;
+            margin-left: 2px;
+        }
+        .music-play-btn.playing i { margin-left: 0; }
+
+        /* ── FOOTER ── */
         footer {
-            padding: 60px 32px 40px;
+            padding: 72px 32px 56px;
             text-align: center;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
         }
-
-        footer p {
+        .f-name {
             font-family: 'Anton', sans-serif;
-            font-size: 16px;
-            font-weight: 400;
-            color: var(--muted);
-            margin-bottom: 8px;
+            font-size: 20px;
+            letter-spacing: 0.08em;
+            color: var(--white);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            opacity: 0.35;
         }
-
-        footer .footer-sub {
-            font-family: 'Anton', sans-serif;
-            font-size: 11px;
-            letter-spacing: 0.2em;
-            color: var(--muted);
-            margin-bottom: 32px;
+        .f-sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--white);
+            line-height: 1.45;
+            margin-bottom: 40px;
         }
-
-        .ngl-button {
+        .ngl-btn {
             display: inline-block;
             background: transparent;
             color: var(--white);
-            border: 1px solid rgba(255,255,255,0.25);
-            padding: 14px 36px;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 16px 40px;
             font-family: 'Anton', sans-serif;
             font-size: 12px;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             border-radius: 50px;
         }
-
-        .ngl-button:hover {
+        .ngl-btn:hover {
             background: var(--white);
-            border-color: var(--white);
-            color: var(--black);
+            color: var(--bg);
+            transform: translateY(-2px);
         }
-
-        /* DIVIDER LINE */
-        .divider {
-            width: 40px;
-            height: 1px;
-            background: rgba(255,255,255,0.2);
-            margin: 0 auto 40px;
-        }
-        @media (max-width: 768px) {
-            body { text-align: center; }
-            .header-title, .section-label, .manifesto, .year-banner, footer { text-align: center; }
-            .slide { padding: 20px 16px; }
+        .f-copy {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 0.2em;
+            color: rgba(8,8,8,0.25);
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <div class="header-title">
-            <h1>MAXIM</h1>
-            <p>@maxim_cruz.x &nbsp;·&nbsp; Mexico City</p>
-        </div>
-    </header>
+<!-- HERO -->
+<header>
 
-    <!-- SOCIAL ROW -->
-    <div class="social-row">
-        <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" class="ig-btn" id="igBtn">
-            <i class="fab fa-instagram"></i>
-            <span>Seguir</span>
+
+    <div class="hero-inner">
+        <div class="hero-eyebrow">Maxim Cruz</div>
+        <div class="hero-name">
+            <span class="n1">MAXIM</span>
+            <span class="n2">CRUZ</span>
+        </div>
+        <div class="hero-age">18 años</div>
+    </div>
+
+
+</header>
+
+
+<!-- SOCIAL -->
+<div class="social-section">
+    <div class="social-handle">@maxim_cruz.x</div>
+    <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" class="ig-btn">
+        <i class="fab fa-instagram"></i>
+        <span>Seguir en Instagram</span>
+    </a>
+    <div class="heart-wrap">
+        <a href="#" id="heartLink">
+            <i class="far fa-heart" id="heartIcon"></i>
         </a>
-        <div class="heart-wrap">
-            <a href="https://www.instagram.com/maxim_cruz.x" target="_blank" id="heartLink">
-                <i class="far fa-heart" id="heartIcon"></i>
-            </a>
-        </div>
+    </div>
+</div>
+
+
+<!-- ABOUT -->
+<div class="sl"><hr><span>Acerca de</span><hr></div>
+
+<div class="chat-wrap" id="chatWrap">
+
+    <div class="chat-msg chat-q" data-delay="0">
+        <div class="chat-who">Visitante</div>
+        <div class="chat-bubble">¿Quién eres?</div>
+    </div>
+    <div class="chat-typing right" id="t1"><span></span><span></span><span></span></div>
+    <div class="chat-msg chat-a" data-delay="0">
+        <div class="chat-who">Maxim</div>
+        <div class="chat-bubble">Soy Maximiliano. Estudio Robótica Industrial en el IPN.<br>Pero honestamente, es solo una parte de lo que soy.</div>
+        <div class="chat-tick">✓✓</div>
     </div>
 
-    <!-- ABOUT -->
-    <div class="section-label">Acerca de</div>
-
-    <div class="slider-wrapper">
-        <div class="image-slider" id="mainSlider">
-            <div class="slide active">
-                <div class="card">
-                    <div class="card-label">Nombre</div>
-                    <div class="card-value">Maximiliano<br>18 años</div>
-                    <div class="card-label">Ing. en Robótica</div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Filosofía</div>
-                    <div class="card-value">Confío en la energía,<br>no en las apariencias</div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Deporte</div>
-                    <div class="card-value">Muay Thai<br>Voleibol · Gym</div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Institución</div>
-                    <div class="card-value">IPN — ESIME<br>Zacatenco</div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Le gusta</div>
-                    <div class="card-value">Leer · Dormir<br>Escuchar</div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Artista Favorito</div>
-                    <div class="card-value">Juice WRLD</div>
-                    <audio controls>
-                        <source src="Juice WRLD - Home ft. XXXTENTACION (Music Video).mp4" type="audio/mpeg">
-                    </audio>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Temas de Interés</div>
-                    <div class="card-value">Inversiones · Marketing<br>Emprendimiento · Autoconocimiento</div>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="card">
-                    <div class="card-label">Nota</div>
-                    <div class="card-value" style="font-size:18px">Dicen que me veo muy especial y envidioso — la realidad es lo contrario :)</div>
-                </div>
-            </div>
-        </div>
-        <div class="swipe-hint">
-            <i class="fas fa-chevron-right"></i>
-            <span>Desliza</span>
-            <i class="fas fa-chevron-right"></i>
-        </div>
-        <div class="slider-dots" id="sliderDots"></div>
+    <div class="chat-msg chat-q" data-delay="0">
+        <div class="chat-who">Visitante</div>
+        <div class="chat-bubble">¿Y qué más eres?</div>
+    </div>
+    <div class="chat-typing right" id="t2"><span></span><span></span><span></span></div>
+    <div class="chat-msg chat-a" data-delay="0">
+        <div class="chat-who">Maxim</div>
+        <div class="chat-bubble">Alguien que comienza a amar el deporte, lee más de lo que duerme y piensa demasiado en cómo funciona el mundo.</div>
+        <div class="chat-tick">✓✓</div>
     </div>
 
-    <!-- MANIFESTO -->
-    <div class="divider"></div>
-    <div class="manifesto">
-        <blockquote>
-            "Confío en la energía,<br>no en las apariencias."
-        </blockquote>
-        <cite>— Maxim Cruz</cite>
+    <div class="chat-msg chat-q" data-delay="0">
+        <div class="chat-who">Visitante</div>
+        <div class="chat-bubble">¿Qué es lo que más te mueve?</div>
     </div>
-    <div class="divider"></div>
+    <div class="chat-typing right" id="t3"><span></span><span></span><span></span></div>
+    <div class="chat-msg chat-a" data-delay="0">
+        <div class="chat-who">Maxim</div>
+        <div class="chat-bubble">Entender cómo algunas personas logran sus planes. Negocios, Desarrollo Personal, mentalidad — no como hobby, sino como obsesión.</div>
+        <div class="chat-tick">✓✓</div>
+    </div>
 
-    <!-- GALLERY -->
-    <div class="section-label">Galería</div>
-    <div class="gallery-scroll-container">
-        <div class="gallery-post">
-            <div class="post-counter">01 / 05</div>
+    <div class="chat-msg chat-q" data-delay="0">
+        <div class="chat-who">Visitante</div>
+        <div class="chat-bubble">¿Cómo eres realmente?</div>
+    </div>
+    <div class="chat-typing right" id="t4"><span></span><span></span><span></span></div>
+    <div class="chat-msg chat-a" data-delay="0">
+        <div class="chat-who">Maxim</div>
+        <div class="chat-bubble">Tranquilo, Analista y Honesto.</div>
+        <div class="chat-tick">✓✓</div>
+    </div>
+
+</div>
+
+<!-- MUSIC -->
+<div class="music-section">
+    <div class="music-card">
+        <canvas class="music-canvas" id="musicCanvas"></canvas>
+        <div class="music-top">
+            <div class="music-label">Sonando ahora</div>
+            <div class="music-eq" id="musicEq">
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="music-info">
+            <div class="music-title">Locura</div>
+            <div class="music-artist">Cali Y El Dandee ft. Sebastián Yatra</div>
+        </div>
+        <audio id="audioPlayer" preload="none">
+            <source src="Locura.mp3" type="audio/mpeg">
+        </audio>
+        <div class="music-controls">
+            <div class="music-progress-wrap">
+                <div class="music-progress-bg">
+                    <div class="music-progress-fill" id="progressFill"></div>
+                </div>
+                <div class="music-times">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
+                </div>
+            </div>
+            <button class="music-play-btn" id="playBtn">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- GALLERY -->
+<div class="sl"><hr><span>Galería</span><hr></div>
+<div class="gallery-section">
+    <div class="g-track" id="gallery">
+        <div class="g-card">
             <img src="NEW.png" alt="Foto 1">
-            <div class="post-date">Enero 2025</div>
-            <div class="scroll-down-hint">
-                <i class="fas fa-chevron-down"></i>
-                <span>Siguiente</span>
-            </div>
+            <div class="g-card-num">01</div>
+            
         </div>
-        <div class="gallery-post">
-            <div class="post-counter">02 / 05</div>
+        <div class="g-card">
             <img src="NEW2.png" alt="Foto 2">
-            <div class="post-date">Febrero 2025</div>
-            <div class="scroll-down-hint"><i class="fas fa-chevron-down"></i><span>Siguiente</span></div>
+            <div class="g-card-num">02</div>
+            
         </div>
-        <div class="gallery-post">
-            <div class="post-counter">03 / 05</div>
+        <div class="g-card">
             <img src="NEW3.png" alt="Foto 3">
-            <div class="post-date">Abril 2025</div>
-            <div class="scroll-down-hint"><i class="fas fa-chevron-down"></i><span>Siguiente</span></div>
+            <div class="g-card-num">03</div>
+            
         </div>
-        <div class="gallery-post">
-            <div class="post-counter">04 / 05</div>
+        <div class="g-card">
             <img src="NEW4.png" alt="Foto 4">
-            <div class="post-date">Agosto 2025</div>
-            <div class="scroll-down-hint"><i class="fas fa-chevron-down"></i><span>Siguiente</span></div>
+            <div class="g-card-num">04</div>
+            
         </div>
-        <div class="gallery-post">
-            <div class="post-counter">05 / 05</div>
+        <div class="g-card">
             <img src="new5.png" alt="Foto 5">
-            <div class="post-date">Diciembre 2025</div>
+            <div class="g-card-num">05</div>
+            
         </div>
     </div>
+</div>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>Hola, soy Maxim.</p>
-        <div class="footer-sub">¿Tienes algo que decirme? Me encantaría leerlo.</div>
-        <a href="https://ngl.link/maxim72941?fbclid=PAZXh0bgNhZW0CMTEAAafoBKD4GvvpOOLgqtEtVMZreKFUB5M2KYM3UV-Zdz9xoAF19YFGxUwAEYRTew_aem_buxV7cg1iY3qeb6wLo6Mjg" target="_blank">
-            <button class="ngl-button">Mensaje anónimo — NGL</button>
-        </a>
-        <br><br>
-        <p style="font-size:12px; margin-top:20px;">© 2025 Maxim Cruz · Desarrollado por Maxim</p>
-    </footer>
+<!-- FOOTER -->
+<footer>
+    <div class="f-name">Hola, soy Maxim.</div>
+    <div class="f-sub">¿Algo que decir,<br>preguntar o confesar?<br>Aquí nadie te juzga.</div>
+    <a href="https://ngl.link/maxim72941?fbclid=PAZXh0bgNhZW0CMTEAAafoBKD4GvvpOOLgqtEtVMZreKFUB5M2KYM3UV-Zdz9xoAF19YFGxUwAEYRTew_aem_buxV7cg1iY3qeb6wLo6Mjg" target="_blank">
+        <button class="ngl-btn">Mensaje anónimo — NGL</button>
+    </a>
+    <div class="f-copy">© 2025 Maxim Cruz · Desarrollado por Maxim</div>
+</footer>
 
-    <script>
-        // Heart toggle
-        const heartLink = document.getElementById('heartLink');
-        const heartIcon = document.getElementById('heartIcon');
-        heartLink.addEventListener('click', () => {
-            heartIcon.classList.remove('far');
-            heartIcon.classList.add('fas');
-            heartLink.style.color = '#e11d48';
+<script>
+    // Heart
+    document.getElementById('heartLink').addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('heartIcon').classList.replace('far','fas');
+        document.getElementById('heartLink').classList.add('liked');
+    });
+
+    // Music canvas — aura + beams de fondo
+    const canvas = document.getElementById('musicCanvas');
+    const ctx = canvas.getContext('2d');
+    let animFrame = null;
+    let isPlaying = false;
+
+    function resizeCanvas() {
+        const card = canvas.parentElement;
+        canvas.width = card.offsetWidth;
+        canvas.height = card.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Partículas de fondo
+    const beams = Array.from({ length: 24 }, () => ({
+        angle: Math.random() * Math.PI * 2,
+        speed: 0.002 + Math.random() * 0.003,
+        length: 0.2 + Math.random() * 0.5,
+        width: 0.5 + Math.random() * 1.5,
+        opacity: 0.04 + Math.random() * 0.08,
+        phase: Math.random() * Math.PI * 2,
+    }));
+
+    const orbs = Array.from({ length: 4 }, (_, i) => ({
+        angle: (i / 4) * Math.PI * 2,
+        speed: 0.004 + Math.random() * 0.003,
+        radius: 0.2 + Math.random() * 0.25,
+        size: 60 + Math.random() * 80,
+        color: ['255,255,255', '200,200,255', '255,220,200', '180,255,220'][i],
+    }));
+
+    let tick = 0;
+
+    function drawAura() {
+        if (!isPlaying) return;
+        tick += 0.012;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = Math.min(canvas.width, canvas.height) * 0.5;
+
+        // Orbes de fondo que se mueven lentamente
+        orbs.forEach(o => {
+            o.angle += o.speed;
+            const ox = cx + Math.cos(o.angle) * r * o.radius;
+            const oy = cy + Math.sin(o.angle) * r * o.radius;
+            const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, o.size);
+            g.addColorStop(0, `rgba(${o.color},0.07)`);
+            g.addColorStop(1, `rgba(${o.color},0)`);
+            ctx.beginPath();
+            ctx.arc(ox, oy, o.size, 0, Math.PI * 2);
+            ctx.fillStyle = g;
+            ctx.fill();
         });
 
-        // Slider setup
-        const slider = document.getElementById('mainSlider');
-        const slides = slider.querySelectorAll('.slide');
-        const dotsContainer = document.getElementById('sliderDots');
-
-        slides.forEach((_, i) => {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            if (i === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => {
-                slider.scrollTo({ left: i * slider.clientWidth, behavior: 'smooth' });
-            });
-            dotsContainer.appendChild(dot);
+        // Destellos tipo rayos desde el centro
+        beams.forEach(b => {
+            b.angle += b.speed;
+            const pulse = 0.5 + 0.5 * Math.sin(tick * 2 + b.phase);
+            const op = b.opacity * pulse;
+            const x1 = cx;
+            const y1 = cy;
+            const x2 = cx + Math.cos(b.angle) * r * b.length;
+            const y2 = cy + Math.sin(b.angle) * r * b.length;
+            const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+            grad.addColorStop(0, `rgba(255,255,255,${op * 1.5})`);
+            grad.addColorStop(1, `rgba(255,255,255,0)`);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = b.width;
+            ctx.stroke();
         });
 
-        slider.addEventListener('scroll', () => {
-            const idx = Math.round(slider.scrollLeft / slider.clientWidth);
-            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-            slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-        });
+        animFrame = requestAnimationFrame(drawAura);
+    }
 
-        // Touch swipe
-        let touchStartX = 0;
-        slider.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-        slider.addEventListener('touchend', e => {
-            const diff = touchStartX - e.changedTouches[0].screenX;
-            if (Math.abs(diff) > 60) {
-                const current = Math.round(slider.scrollLeft / slider.clientWidth);
-                const next = Math.max(0, Math.min(current + (diff > 0 ? 1 : -1), slides.length - 1));
-                slider.scrollTo({ left: next * slider.clientWidth, behavior: 'smooth' });
+    function stopAura() {
+        cancelAnimationFrame(animFrame);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+
+    const audio = document.getElementById('audioPlayer');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalTimeEl = document.getElementById('totalTime');
+    const musicEq = document.getElementById('musicEq');
+    const musicCard = document.querySelector('.music-card');
+
+    function formatTime(s) {
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return `${m}:${sec.toString().padStart(2,'0')}`;
+    }
+
+    function burst() {
+        const rect = playBtn.getBoundingClientRect();
+        const cardRect = musicCard.getBoundingClientRect();
+        const cx = rect.left - cardRect.left + rect.width / 2;
+        const cy = rect.top - cardRect.top + rect.height / 2;
+        const count = 18;
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('span');
+            p.className = 'spark';
+            const angle = (i / count) * 360;
+            const dist = 40 + Math.random() * 40;
+            const size = 3 + Math.random() * 4;
+            const dur = 500 + Math.random() * 300;
+            const dx = Math.cos(angle * Math.PI / 180) * dist;
+            const dy = Math.sin(angle * Math.PI / 180) * dist;
+            p.style.cssText = `
+                position:absolute;
+                left:${cx}px; top:${cy}px;
+                width:${size}px; height:${size}px;
+                border-radius:50%;
+                background:#fff;
+                pointer-events:none;
+                transform:translate(-50%,-50%);
+                animation: spark ${dur}ms ease-out forwards;
+                --dx:${dx}px; --dy:${dy}px;
+            `;
+            musicCard.style.position = 'relative';
+            musicCard.appendChild(p);
+            setTimeout(() => p.remove(), dur + 50);
+        }
+    }
+
+    // inject spark keyframes once
+    if (!document.getElementById('sparkStyle')) {
+        const s = document.createElement('style');
+        s.id = 'sparkStyle';
+        s.textContent = `
+            @keyframes spark {
+                0%   { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+                100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
             }
-        }, { passive: true });
+            .spark { overflow: visible; }
+        `;
+        document.head.appendChild(s);
+    }
 
-        // Gallery — fade in on scroll
-        const galleryContainer = document.querySelector('.gallery-scroll-container');
-        const posts = document.querySelectorAll('.gallery-post');
+    playBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            playIcon.classList.replace('fa-play', 'fa-pause');
+            playBtn.classList.add('playing');
+            musicEq.classList.add('playing');
+            canvas.classList.add('active');
+            isPlaying = true;
+            burst();
+            drawAura();
+        } else {
+            audio.pause();
+            playIcon.classList.replace('fa-pause', 'fa-play');
+            playBtn.classList.remove('playing');
+            musicEq.classList.remove('playing');
+            canvas.classList.remove('active');
+            isPlaying = false;
+            stopAura();
+        }
+    });
 
-        // Show first post immediately
-        posts[0].classList.add('visible');
+    audio.addEventListener('timeupdate', () => {
+        if (!audio.duration) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressFill.style.width = pct + '%';
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+    });
 
-        galleryContainer.addEventListener('scroll', () => {
-            const containerLeft = galleryContainer.getBoundingClientRect().left;
-            const containerWidth = galleryContainer.clientWidth;
-            posts.forEach(post => {
-                const postLeft = post.getBoundingClientRect().left - containerLeft;
-                const inView = postLeft >= -containerWidth * 0.3 && postLeft <= containerWidth * 0.3;
-                if (inView) post.classList.add('visible');
-            });
-        });
-    </script>
+    audio.addEventListener('loadedmetadata', () => {
+        totalTimeEl.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('ended', () => {
+        playIcon.classList.replace('fa-pause', 'fa-play');
+        playBtn.classList.remove('playing');
+        musicEq.classList.remove('playing');
+        canvas.classList.remove('active');
+        isPlaying = false;
+        stopAura();
+        progressFill.style.width = '0%';
+        currentTimeEl.textContent = '0:00';
+    });
+
+    document.querySelector('.music-progress-bg').addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = pct * audio.duration;
+    });
+
+
+    const allQ = document.querySelectorAll('.chat-q');
+    const allA = document.querySelectorAll('.chat-a');
+    const allT = document.querySelectorAll('.chat-typing');
+
+    let chatStarted = false;
+
+    const chatSection = document.getElementById('chatWrap');
+    const chatTrigger = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !chatStarted) {
+            chatStarted = true;
+            runChat();
+            chatTrigger.disconnect();
+        }
+    }, { threshold: 0.1 });
+    chatTrigger.observe(chatSection);
+
+    function runChat() {
+        let delay = 0;
+        for (let i = 0; i < allQ.length; i++) {
+            const q = allQ[i];
+            const typing = allT[i];
+            const a = allA[i];
+
+            // 1. Pregunta aparece
+            setTimeout(() => q.classList.add('in'), delay);
+            delay += 500;
+
+            // 2. Typing indicator aparece
+            setTimeout(() => typing.classList.add('show'), delay);
+            delay += 1400;
+
+            // 3. Typing se oculta, respuesta aparece
+            setTimeout(() => {
+                typing.classList.remove('show');
+                setTimeout(() => a.classList.add('in'), 150);
+            }, delay);
+            delay += 800;
+        }
+    }
+
+</script>
 </body>
 </html>
